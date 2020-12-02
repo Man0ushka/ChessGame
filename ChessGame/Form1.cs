@@ -81,7 +81,7 @@ namespace ChessGame
 
 
                 //boardPicture.Invalidate(rectStart);
-                boardPicture.Invalidate();
+                boardPicture.Invalidate(rectStart);
                 mouseClick = true;
                 gr.Dispose();
             }
@@ -102,14 +102,15 @@ namespace ChessGame
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     gr.FillRectangle(blankBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8 , Form1.hgt / 8 ));
                     DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
-                    boardPicture.Invalidate();
+                    //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     startSpot = endSpot;
                     gr.FillRectangle(startBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8 , Form1.hgt / 8 ));
                     DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
                     //gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     boardPicture.Invalidate();
-                    blankPen.Dispose();
+                    blankBrush.Dispose();
                     gr.Dispose();
                     return;
                 }
@@ -118,7 +119,7 @@ namespace ChessGame
                 //g.FillRectangle(endBrush, new Rectangle(endSpot.Y * Form1.hgt / 8, endSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                 if (game.makeMove(startSpot, endSpot) == false)
                 {
-                    System.Diagnostics.Debug.WriteLine("Makemove = false");
+                    
                     //g.FillRectangle(blankBrush, new Rectangle(endSpot.Y * Form1.hgt / 8, endSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     return;
                 }
@@ -132,13 +133,15 @@ namespace ChessGame
                     
                     g.FillRectangle(endBrush, new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     DrawTool.DrawPieceInit(lastSpotEnd.X, lastSpotEnd.Y, piece.Name, piece.Player.IsWhite);
-                    boardPicture.Invalidate();
+                    //boardPicture.Invalidate(new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     g.FillRectangle(startBrush, new Rectangle(lastSpotStart.Y * Form1.hgt / 8, lastSpotStart.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    //boardPicture.Invalidate(new Rectangle(lastSpotStart.Y * Form1.hgt / 8, lastSpotStart.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     boardPicture.Invalidate();
                     if (turn.IsWhite!=game.currentTurn.IsWhite)
                     {
                         if (game.moveList.Count - 2 >= 0)
                         {
+                            Graphics gm = Graphics.FromImage(Form1.bm);
                             int lastlastIndex = game.moveList.Count - 2;
                             Move lastlastMove = game.moveList[lastlastIndex];
                             
@@ -151,11 +154,22 @@ namespace ChessGame
                             // COLOR BLANK MOVED PIECE OPPOSITE ADVERSE
                             if (endSpot.Piece==null)
                             {
-                                g.FillRectangle(lastEndBrush, new Rectangle(lastlastEndSpot.Y * Form1.hgt / 8, lastlastEndSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                                System.Diagnostics.Debug.WriteLine("endSpot Piece == null"+" last last move piece moved: "+pieceLastlast.Name);
+                                gm.FillRectangle(lastEndBrush, new Rectangle(lastlastEndSpot.Y * Form1.hgt / 8, lastlastEndSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                                 DrawTool.DrawPieceInit(lastlastEndSpot.X, lastlastEndSpot.Y, pieceLastlast.Name, pieceLastlast.Player.IsWhite);
+                                //boardPicture.Invalidate(new Rectangle(lastlastEndSpot.Y * Form1.hgt / 8, lastlastEndSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                                boardPicture.Invalidate();
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine("endSpot Piece NOT null");
+                                gm.FillRectangle(endBrush, new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                                DrawTool.DrawPieceInit(lastSpotEnd.X, lastSpotEnd.Y, piece.Name, piece.Player.IsWhite);
+                                ////boardPicture.Invalidate(new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                                boardPicture.Invalidate();
                             }
 
-                                //boardPicture.Invalidate();
+                            //boardPicture.Invalidate();
 
 
 
@@ -165,9 +179,17 @@ namespace ChessGame
 
 
                             // COLOR BLANK START PIECE OPPOSITE ADVERSE
-                            g.FillRectangle(lastStartBrush, new Rectangle(lastlastStartSpot.Y * Form1.hgt / 8, lastlastStartSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                            //boardPicture.Invalidate();
+                            if (endSpot.X == lastlastStartSpot.X && endSpot.Y == lastlastStartSpot.Y)
+                            {
+
+                            }
+                            else
+                                g.FillRectangle(lastStartBrush, new Rectangle(lastlastStartSpot.Y * Form1.hgt / 8, lastlastStartSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+
+                            //boardPicture.Invalidate(new Rectangle(lastlastStartSpot.Y * Form1.hgt / 8, lastlastStartSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                            boardPicture.Invalidate();
                             g.Dispose();
+                            gm.Dispose();
                             lastEndBrush.Dispose();
                             
                         }
@@ -179,12 +201,13 @@ namespace ChessGame
                     {
                         
                         g.Dispose();
+                        boardPicture.Invalidate();
                     }
                 }
 
 
 
-                
+                boardPicture.Invalidate();
                 mouseClick = false;
                // game.makeMove(startSpot, endSpot);
             }

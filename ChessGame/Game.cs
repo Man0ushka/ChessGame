@@ -20,17 +20,17 @@ namespace ChessGame
         public Dictionary<bool, bool> canBlock =new Dictionary<bool, bool>();
         public Dictionary<bool, bool> checkMate = new Dictionary<bool, bool>();
 
-        public Dictionary<bool, Spot> piecesAlive = new Dictionary<bool, Spot>();
-
-
+        public static Dictionary<Piece,Spot> piecesAlive = new Dictionary<Piece, Spot>();
+        public List<Piece> piecesDead = new List<Piece>();
+        public Dictionary<Piece, List<Spot>> movPoss = new Dictionary<Piece, List<Spot>>();
         public GameStatus Status { get => status; set => status = value; }
         public Board Brd { get => brd; set => brd = value; }
 
         public Game()
         {
             
-            Player p1 = new BlackHuman(false);
-            Player p2 = new WhiteHuman(true);
+            Player p1 = new WhiteHuman(false);
+            Player p2 = new BlackHuman(true);
             initializeGame(p1, p2);
             playerList.Add(p1);
             playerList.Add(p2);
@@ -93,6 +93,46 @@ namespace ChessGame
             checkMate.Add(!currentTurn.IsWhite, false);
             moveList.Clear();
             
+        }
+        public bool isStaleMate(Player p)
+        {
+            getSpotList();
+            foreach(Piece piece in movPoss.Keys)
+            {
+                if (piece.Player==p)
+                {
+                    if (movPoss[piece].Count > 0)
+                        return false;
+                }
+            }
+            return true;
+        }
+        public void getSpotList()
+        {
+
+            foreach (Piece sourcePiece in piecesAlive.Keys)
+            {
+                Spot startSpot = piecesAlive[sourcePiece];
+                List<Spot> movPossPiece = new List<Spot>();
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 8; y++)
+                    {
+                        
+                        Spot endSpot = brd.getBox(x, y);
+                        Piece endPiece = endSpot.Piece;
+                        bool canMoveWithoutChecked = CanMovWithoutChecked(sourcePiece, endPiece, startSpot, endSpot);
+                        bool canMove = sourcePiece.canMove(startSpot, endSpot);
+                        if (canMove==true && canMoveWithoutChecked==true)
+                        {
+                            movPossPiece.Add(endSpot);
+                        }
+                            
+
+                    }
+                }
+                movPoss[sourcePiece] = movPossPiece;
+            }
         }
 
         public Spot isInCheck(Player p)
@@ -246,7 +286,7 @@ namespace ChessGame
             
             if (sourcePiece.Player.IsWhite!=currentTurn.IsWhite)
             {
-                System.Diagnostics.Debug.WriteLine("not your turn!");
+                
                 return false;
             }
             if (sourcePiece.Name == "K" && king.Check==false)
@@ -344,15 +384,18 @@ namespace ChessGame
                             DrawTool.DrawPiece(brd.getBox(7,0), brd.getBox(7, 3), brd.getBox(7, 0).Piece.Name, brd.getBox(7, 0).Piece.Player.IsWhite);
                             brd.replaceBox(brd.getBox(7, 3).X, brd.getBox(7, 3).Y, brd.getBox(7, 0).Piece);
                             brd.replaceBox(brd.getBox(7, 0).X, brd.getBox(7, 0).Y, null);
-                           
-                            
+
+                            piecesAlive[brd.getBox(7, 3).Piece] = brd.getBox(7, 3);
+
+
+
                         }
                         else //MOVE ROOK BLACK
                         {
                             DrawTool.DrawPiece(brd.getBox(0, 0), brd.getBox(0, 3), brd.getBox(0, 0).Piece.Name, brd.getBox(0, 0).Piece.Player.IsWhite);
                             brd.replaceBox(brd.getBox(0, 3).X, brd.getBox(0, 3).Y, brd.getBox(0, 0).Piece);
                             brd.replaceBox(brd.getBox(0, 0).X, brd.getBox(0, 0).Y, null);
-                            
+                            piecesAlive[brd.getBox(0, 3).Piece] = brd.getBox(0, 3);
                         }
                         
                     }
@@ -368,14 +411,14 @@ namespace ChessGame
                             DrawTool.DrawPiece(brd.getBox(7, 7), brd.getBox(7, 5), brd.getBox(7, 7).Piece.Name, brd.getBox(7, 7).Piece.Player.IsWhite);
                             brd.replaceBox(brd.getBox(7, 5).X, brd.getBox(7, 5).Y, brd.getBox(7, 7).Piece);
                             brd.replaceBox(brd.getBox(7, 7).X, brd.getBox(7, 7).Y, null);
-                            
+                            piecesAlive[brd.getBox(7, 5).Piece] = brd.getBox(7, 5);
                         }
                         else //MOVE ROOK BLACK
                         {
                             DrawTool.DrawPiece(brd.getBox(0, 7), brd.getBox(0, 5), brd.getBox(0, 7).Piece.Name, brd.getBox(0, 7).Piece.Player.IsWhite);
                             brd.replaceBox(brd.getBox(0, 5).X, brd.getBox(0, 5).Y, brd.getBox(0, 7).Piece);
                             brd.replaceBox(brd.getBox(0, 7).X, brd.getBox(0, 7).Y, null);
-                            
+                            piecesAlive[brd.getBox(0, 5).Piece] = brd.getBox(0, 5);
                         }
 
                     }
@@ -389,6 +432,9 @@ namespace ChessGame
 
                 if (endPiece != null) //KILL PIECE
                 {
+                    piecesDead.Add(endPiece);
+                    piecesAlive.Remove(endPiece);
+                    
                     endPoint.Piece.Alive = false;
                     // DELETE PIECE FROM DRAWING
                    // DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player);
@@ -406,6 +452,7 @@ namespace ChessGame
                     moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, null));
                     System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name + " x: " + startPoint.X + " y: " + startPoint.Y + " to " + "x: " + endPoint.X + " y: " + endPoint.Y);
                 }
+                piecesAlive[sourcePiece] = brd.getBox(endPoint.X, endPoint.Y);
             }
             else
             {
@@ -424,17 +471,22 @@ namespace ChessGame
             if (isInCheck(currentTurn) != null)
             {
                 isCheck[currentTurn.IsWhite] = true;
-                
+
                 if (isCheckMate(currentTurn))
                 {
                     System.Diagnostics.Debug.WriteLine("YOU ARE IN CHECKMATE" + currentTurn.IsWhite.ToString());
                     initializeGame(playerList[0], playerList[1]);
                 }
-                    
+
                 else
-                System.Diagnostics.Debug.WriteLine("YOU ARE IN CHECK" + currentTurn.IsWhite.ToString());
+                    System.Diagnostics.Debug.WriteLine("YOU ARE IN CHECK" + currentTurn.IsWhite.ToString());
             }
-            else isCheck[currentTurn.IsWhite] = false;
+            else
+            {
+                isCheck[currentTurn.IsWhite] = false;
+                //if (isStaleMate(currentTurn))
+                    //System.Diagnostics.Debug.WriteLine("STALEMATE YOU FUCK" + currentTurn.IsWhite.ToString());
+            }
 
             // CHANGE COLOR LABEL
             if (currentTurn == playerList[0])

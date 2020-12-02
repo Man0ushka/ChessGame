@@ -169,7 +169,7 @@ namespace ChessGame
                     return true;
                 }
             }
-            System.Diagnostics.Debug.WriteLine("x: "+x.ToString()+" y: "+y.ToString()+" up? "+ start.Piece.Player.IsUp.ToString());
+            //System.Diagnostics.Debug.WriteLine("x: "+x.ToString()+" y: "+y.ToString()+" up? "+ start.Piece.Player.IsUp.ToString());
             return false;
         }
 
