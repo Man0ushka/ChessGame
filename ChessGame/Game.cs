@@ -20,6 +20,8 @@ namespace ChessGame
         public Dictionary<bool, bool> canBlock =new Dictionary<bool, bool>();
         public Dictionary<bool, bool> checkMate = new Dictionary<bool, bool>();
 
+        public Dictionary<bool, Spot> piecesAlive = new Dictionary<bool, Spot>();
+
 
         public GameStatus Status { get => status; set => status = value; }
         public Board Brd { get => brd; set => brd = value; }
