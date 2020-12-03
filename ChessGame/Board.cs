@@ -74,7 +74,7 @@ namespace ChessGame
                 for (int j = 0; j < 8; j++)
                 {
                     boxes[i, j] = new Spot(i, j, null);
-                    DrawTool.DrawSpotColor(getBox(i, j), getBox(i, j).SpotColor);
+                    DrawTool.DrawSpotColor(getBox(i, j));
                 }
             }
             foreach (Spot spot in boxes)
@@ -86,7 +86,7 @@ namespace ChessGame
                 }
                 else
                 {
-                    DrawTool.DrawSpotColor(spot, spot.SpotColor);
+                    DrawTool.DrawSpotColor(spot);
                     DrawTool.DrawPieceInit(spot.X, spot.Y, spot.Piece.Name, spot.Piece.Player.IsWhite);
                     Game.piecesAlive[spot.Piece]=spot;
                     //Form1.form1.game.movPoss.Add(spot.Piece,new List<Spot>());

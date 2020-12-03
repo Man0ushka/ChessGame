@@ -7,10 +7,11 @@ namespace ChessGame
 {
     class DrawTool
     {
-        public static void DrawSpotColor(Spot spot, Color spotColor)
+        public static void DrawSpotColor(Spot spot)
         {
             int x = spot.X;
             int y = spot.Y;
+            Color spotColor = spot.SpotColor;
             Graphics gr = Graphics.FromImage(Form1.bm);
             Rectangle rect = new Rectangle(y * Form1.hgt / 8, x * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
 
@@ -30,7 +31,7 @@ namespace ChessGame
             Image image = null;
             Graphics gr = Graphics.FromImage(Form1.bm);
             Rectangle rectEnd = new Rectangle(endy * Form1.hgt / 8, endx * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
-            Rectangle rectStart = new Rectangle(sy * Form1.hgt / 8 , sx * Form1.wid / 8 , Form1.wid / 8 , Form1.hgt / 8 );
+            Rectangle rectStart = new Rectangle(sy * Form1.hgt / 8, sx * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
 
             SolidBrush startBrush = new SolidBrush(startPoint.SpotColor);
             SolidBrush endBrush = new SolidBrush(endPoint.SpotColor);
@@ -60,13 +61,13 @@ namespace ChessGame
             if (pieceName == "Q" && isWhite == false)
                 image = Image.FromFile("blackQ.png");
             //KILL PIECE
-            if (endPoint.Piece!=null)
+            if (endPoint.Piece != null)
                 gr.FillRectangle(endBrush, rectEnd);
 
             gr.DrawImage(image, rectEnd);
             gr.FillRectangle(startBrush, rectStart);
-           /* Form1.form1.boardPicture.Invalidate(rectStart);
-            Form1.form1.boardPicture.Invalidate(rectEnd);*/
+            /* Form1.form1.boardPicture.Invalidate(rectStart);
+             Form1.form1.boardPicture.Invalidate(rectEnd);*/
             Form1.form1.boardPicture.Invalidate();
             gr.Dispose();
             startBrush.Dispose();

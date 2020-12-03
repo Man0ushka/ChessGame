@@ -31,7 +31,7 @@
             this.boardPicture = new System.Windows.Forms.PictureBox();
             this.player2 = new System.Windows.Forms.Label();
             this.player1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnFlipBoard = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.boardPicture)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,21 +65,22 @@
             this.player1.TabIndex = 1;
             this.player1.Text = "PLAYER 1";
             // 
-            // button1
+            // btnFlipBoard
             // 
-            this.button1.Location = new System.Drawing.Point(676, 110);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnFlipBoard.Location = new System.Drawing.Point(676, 110);
+            this.btnFlipBoard.Name = "btnFlipBoard";
+            this.btnFlipBoard.Size = new System.Drawing.Size(75, 23);
+            this.btnFlipBoard.TabIndex = 2;
+            this.btnFlipBoard.Text = "Fip Board";
+            this.btnFlipBoard.UseVisualStyleBackColor = true;
+            this.btnFlipBoard.Click += new System.EventHandler(this.btnFlipBoard_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 596);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnFlipBoard);
             this.Controls.Add(this.player1);
             this.Controls.Add(this.player2);
             this.Controls.Add(this.boardPicture);
@@ -95,7 +96,7 @@
         public System.Windows.Forms.PictureBox boardPicture;
         public System.Windows.Forms.Label player2;
         public System.Windows.Forms.Label player1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnFlipBoard;
     }
 }
 

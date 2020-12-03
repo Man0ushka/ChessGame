@@ -274,7 +274,10 @@ namespace ChessGame
             graphics.Dispose();
         }
 
-
-
+        private void btnFlipBoard_Click(object sender, EventArgs e)
+        {
+            bm.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            boardPicture.Image = bm;
+        }
     }
 }
