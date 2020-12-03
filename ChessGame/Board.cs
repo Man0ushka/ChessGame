@@ -28,7 +28,7 @@ namespace ChessGame
 
         public void resetBoard(Player up, Player down)
         {
-
+            
             // initialize black pieces 
             boxes[0,0] = new Spot(0, 0, new Rook(up));
             boxes[0,1] = new Spot(0, 1, new Knight(up));
@@ -68,6 +68,9 @@ namespace ChessGame
             boxes[6, 5] = new Spot(6, 5, new Pawn(down));
             boxes[6, 6] = new Spot(6, 6, new Pawn(down));
             boxes[6, 7] = new Spot(6, 7, new Pawn(down));
+
+
+
             //... 
             for (int i = 2; i < 6; i++)
             {

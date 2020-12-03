@@ -13,6 +13,8 @@ namespace ChessGame
 {
     public partial class Form1 : Form
     {
+        public bool isFlipped = false;
+
         public static Bitmap bm;
         public static int wid;
         public static int hgt;
@@ -276,8 +278,7 @@ namespace ChessGame
 
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
-            bm.RotateFlip(RotateFlipType.RotateNoneFlipY);
-            boardPicture.Image = bm;
+            isFlipped = !isFlipped;
         }
     }
 }

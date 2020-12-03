@@ -38,6 +38,21 @@ namespace ChessGame
             playerList.Add(p2);
         }
 
+        public void FlipBoard()
+        {
+            // FLIP PLAYER ISUP
+            if (p1.IsUp)
+            {
+                p1.IsUp = false;
+                p2.IsUp = true;
+            }
+            else
+            {
+                p1.IsUp = true;
+                p2.IsUp = false;
+            }
+        }
+
         public void initializeGame(Player p1, Player p2)
         {
             if (p1.IsWhite == true)
