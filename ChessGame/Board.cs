@@ -69,6 +69,14 @@ namespace ChessGame
             boxes[6, 6] = new Spot(6, 6, new Pawn(down));
             boxes[6, 7] = new Spot(6, 7, new Pawn(down));
             //... 
+            for (int i = 2; i < 6; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    boxes[i, j] = new Spot(i, j, null);
+                    DrawTool.DrawSpotColor(getBox(i, j), getBox(i, j).SpotColor);
+                }
+            }
             foreach (Spot spot in boxes)
             {
                
@@ -86,14 +94,7 @@ namespace ChessGame
                     
             }
             // initialize remaining boxes without any piece 
-            for (int i = 2; i < 6; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    boxes[i,j] = new Spot(i, j, null);
-                    DrawTool.DrawSpotColor(getBox(i,j), getBox(i, j).SpotColor);
-                }
-            }
+           
 
         }
     }

@@ -25,12 +25,14 @@ namespace ChessGame
         public Dictionary<Piece, List<Spot>> movPoss = new Dictionary<Piece, List<Spot>>();
         public GameStatus Status { get => status; set => status = value; }
         public Board Brd { get => brd; set => brd = value; }
+        Player p1;
+        Player p2;
 
         public Game()
         {
             
-            Player p1 = new WhiteHuman(false);
-            Player p2 = new BlackHuman(true);
+            p1 = new WhiteHuman(false);
+            p2 = new BlackHuman(true);
             initializeGame(p1, p2);
             playerList.Add(p1);
             playerList.Add(p2);
@@ -69,6 +71,8 @@ namespace ChessGame
             isCheck.Clear();
             canBlock.Clear();
             checkMate.Clear();
+            movPoss.Clear();
+            
 
                 downKingSpot = new Spot(7, 4, new King(p1));
                 upKingSpot = new Spot(0, 4, new King(p2));
@@ -509,7 +513,23 @@ namespace ChessGame
                 if (isCheckMate(currentTurn))
                 {
                     System.Diagnostics.Debug.WriteLine("YOU ARE IN CHECKMATE" + currentTurn.IsWhite.ToString());
-                    initializeGame(playerList[0], playerList[1]);
+                    if (playerList[0].IsWhite)
+                    {
+                       p1 = new BlackHuman(false);
+                       p2 = new WhiteHuman(true);
+                    }
+                    else
+                    {
+                        p1 = new WhiteHuman(false);
+                        p2 = new BlackHuman(true);
+                    }
+
+                    piecesAlive.Clear();
+                    piecesDead.Clear();
+                    playerList.Clear();
+                    initializeGame(p1, p2);
+                    playerList.Add(p1);
+                    playerList.Add(p2);
                 }
 
                 else
