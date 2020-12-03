@@ -68,6 +68,7 @@ namespace ChessGame
             // Rien de sélectionner
             if (mouseClick==false)
             {
+                game.getSpotList();
                 startSpot = game.Brd.getBox(q.Y/(hgt/8), q.X/(wid/8));
 
                 if (startSpot.Piece == null || startSpot.Piece.Player!=game.currentTurn)
@@ -84,17 +85,35 @@ namespace ChessGame
                 boardPicture.Invalidate(rectStart);
                 mouseClick = true;
                 gr.Dispose();
+
+                if (game.movPoss[startSpot.Piece].Count == 0)
+                    System.Diagnostics.Debug.WriteLine(startSpot.Piece.Name + " cannot move!");
+                foreach (Spot spot in game.movPoss[startSpot.Piece])
+                {
+                    System.Diagnostics.Debug.WriteLine(startSpot.Piece.Name + " can move to: x: " + spot.X.ToString() + ", y: " + spot.Y.ToString() + " Count: " + game.movPoss[startSpot.Piece].Count.ToString());
+                    
+                }
+
             }
             else if (mouseClick==true)
             {
+                game.getSpotList();
 
                 //REMOVE START OUTLINE
                 /*Graphics gr = Graphics.FromImage(Form1.bm);
                 gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                 boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));*/
                 endSpot = game.Brd.getBox(q.Y / (hgt / 8), q.X / (wid / 8));
+
                 if (endSpot.Piece != null && endSpot.Piece.Player == game.currentTurn)
                 {
+                    if (game.movPoss[endSpot.Piece].Count==0)
+                        System.Diagnostics.Debug.WriteLine(endSpot.Piece.Name + " cannot move!");
+                        foreach (Spot spot in game.movPoss[endSpot.Piece])
+                    {
+                        System.Diagnostics.Debug.WriteLine(endSpot.Piece.Name + " can move to: x: " + spot.X.ToString() + ", y: " + spot.Y.ToString()+" Count: " + game.movPoss[endSpot.Piece].Count.ToString());
+
+                    }
                     Graphics gr = Graphics.FromImage(Form1.bm);
                     Pen blankPen = new Pen(startSpot.SpotColor, 1);
                     SolidBrush blankBrush = new SolidBrush(startSpot.SpotColor);
@@ -154,7 +173,7 @@ namespace ChessGame
                             // COLOR BLANK MOVED PIECE OPPOSITE ADVERSE
                             if (endSpot.Piece==null)
                             {
-                                System.Diagnostics.Debug.WriteLine("endSpot Piece == null"+" last last move piece moved: "+pieceLastlast.Name);
+                                //System.Diagnostics.Debug.WriteLine("endSpot Piece == null"+" last last move piece moved: "+pieceLastlast.Name);
                                 gm.FillRectangle(lastEndBrush, new Rectangle(lastlastEndSpot.Y * Form1.hgt / 8, lastlastEndSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                                 DrawTool.DrawPieceInit(lastlastEndSpot.X, lastlastEndSpot.Y, pieceLastlast.Name, pieceLastlast.Player.IsWhite);
                                 //boardPicture.Invalidate(new Rectangle(lastlastEndSpot.Y * Form1.hgt / 8, lastlastEndSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
@@ -162,7 +181,7 @@ namespace ChessGame
                             }
                             else
                             {
-                                System.Diagnostics.Debug.WriteLine("endSpot Piece NOT null");
+                                //System.Diagnostics.Debug.WriteLine("endSpot Piece NOT null");
                                 gm.FillRectangle(endBrush, new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                                 DrawTool.DrawPieceInit(lastSpotEnd.X, lastSpotEnd.Y, piece.Name, piece.Player.IsWhite);
                                 ////boardPicture.Invalidate(new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));

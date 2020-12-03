@@ -13,9 +13,9 @@ namespace ChessGame
         public static Board brd = new Board();
         GameStatus status;
         public Player currentTurn;
-        public Dictionary<bool,Spot> kingPos = new Dictionary<bool, Spot>();
-        Spot whiteKingSpot;
-        Spot blackKingSpot;
+        public Dictionary<bool, Spot> kingPos = new Dictionary<bool, Spot>();
+        Spot upKingSpot;
+        Spot downKingSpot;
         public Dictionary<bool, bool> isCheck = new Dictionary<bool, bool>();
         public Dictionary<bool, bool> canBlock =new Dictionary<bool, bool>();
         public Dictionary<bool, bool> checkMate = new Dictionary<bool, bool>();
@@ -69,37 +69,31 @@ namespace ChessGame
             isCheck.Clear();
             canBlock.Clear();
             checkMate.Clear();
-            if (p1.IsUp==true)
-            {
-                whiteKingSpot = new Spot(7, 4, new King(p2));
-                blackKingSpot = new Spot(0, 4, new King(p1));
-                kingPos.Add(p2.IsWhite, whiteKingSpot);
-                kingPos.Add(p1.IsWhite, blackKingSpot);
-            }
-            else
-            {
-                whiteKingSpot = new Spot(7, 4, new King(p1));
-                blackKingSpot = new Spot(0, 4, new King(p2));
-                kingPos.Add(p1.IsWhite, whiteKingSpot);
-                kingPos.Add(p2.IsWhite, blackKingSpot);
-            }
+
+                downKingSpot = new Spot(7, 4, new King(p1));
+                upKingSpot = new Spot(0, 4, new King(p2));
+                kingPos.Add(p2.IsWhite, upKingSpot);
+                kingPos.Add(p1.IsWhite, downKingSpot);
+            System.Diagnostics.Debug.WriteLine("King: " + p1.IsWhite.ToString() + " X: " + kingPos[p1.IsWhite].X.ToString() + " Y: " + kingPos[p1.IsWhite].Y.ToString());
+            System.Diagnostics.Debug.WriteLine("King: " + p2.IsWhite.ToString() + " X: " + kingPos[p2.IsWhite].X.ToString() + " Y: " + kingPos[p2.IsWhite].Y.ToString());
 
 
-            isCheck.Add(currentTurn.IsWhite, false);
-            isCheck.Add(!currentTurn.IsWhite, false);
-            canBlock.Add(currentTurn.IsWhite, true);
-            canBlock.Add(!currentTurn.IsWhite, true);
-            checkMate.Add(currentTurn.IsWhite, false);
-            checkMate.Add(!currentTurn.IsWhite, false);
+            isCheck.Add(p1.IsWhite, false);
+            isCheck.Add(p2.IsWhite, false);
+            canBlock.Add(p1.IsWhite, true);
+            canBlock.Add(p2.IsWhite, true);
+            checkMate.Add(p1.IsWhite, false);
+            checkMate.Add(p2.IsWhite, false);
             moveList.Clear();
             
         }
         public bool isStaleMate(Player p)
         {
-            getSpotList();
-            foreach(Piece piece in movPoss.Keys)
+            
+            foreach(Piece piece in piecesAlive.Keys)
             {
-                if (piece.Player==p)
+                getSpotListOnePiece(piece);
+                if (piece.Player.IsWhite==p.IsWhite)
                 {
                     if (movPoss[piece].Count > 0)
                         return false;
@@ -134,26 +128,64 @@ namespace ChessGame
                 movPoss[sourcePiece] = movPossPiece;
             }
         }
+        public void getSpotListOnePiece(Piece sourcePiece)
+        {
 
+
+                Spot startSpot = piecesAlive[sourcePiece];
+                List<Spot> movPossPiece = new List<Spot>();
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 8; y++)
+                    {
+
+                        Spot endSpot = brd.getBox(x, y);
+                        Piece endPiece = endSpot.Piece;
+                        bool canMoveWithoutChecked = CanMovWithoutChecked(sourcePiece, endPiece, startSpot, endSpot);
+                        bool canMove = sourcePiece.canMove(startSpot, endSpot);
+                        if (canMove == true && canMoveWithoutChecked == true)
+                        {
+                            movPossPiece.Add(endSpot);
+                        }
+
+
+                    }
+                }
+                movPoss[sourcePiece] = movPossPiece;
+            
+        }
+        public Spot isInCheckLol(Player p)
+        {
+            foreach (Piece sourcePiece in piecesAlive.Keys)
+            {
+                if (sourcePiece.Player.IsWhite != p.IsWhite)
+                {
+                    if (movPoss[sourcePiece].Contains(kingPos[p.IsWhite]))
+                        return piecesAlive[sourcePiece];
+                }
+            }
+            return null;
+        }
         public Spot isInCheck(Player p)
         {
             bool white = p.IsWhite;
 
-            for (int x=0;x<8;x++)
+            for (int x = 0; x < 8; x++)
             {
-                for (int y=0;y<8;y++)
+                for (int y = 0; y < 8; y++)
                 {
                     Spot spot = brd.getBox(x, y);
 
-                    if (spot.Piece != null && spot.Piece.Player.IsWhite!=white)
+                    if (spot.Piece != null && spot.Piece.Player != p)
                     {
+
                         if (spot.Piece.Name == "P")
                         {
-                            int xP = (kingPos[white].X - spot.X);
-                            int yP = kingPos[white].Y - spot.Y;
+                            int xP = (kingPos[p.IsWhite].X - spot.X);
+                            int yP = kingPos[p.IsWhite].Y - spot.Y;
                             if (spot.Piece.Player.IsUp == true)
                             {
-                                
+
                                 // DIAGONAL MOVEMENT
                                 if ((yP == 1 && xP == 1) || (yP == -1 && xP == 1))
                                 {
@@ -162,25 +194,25 @@ namespace ChessGame
                             }
                             else
                             {
-                                
+
                                 if ((yP == 1 && xP == -1) || (yP == -1 && xP == -1))
                                 {
                                     return spot;
                                 }
                             }
                         }
-                        else if (spot.Piece.canMove(spot, kingPos[white]))
+                        else if (spot.Piece.canMove(spot, kingPos[p.IsWhite]))
                         {
-                            
+
                             return spot;
                         }
-                            
+
 
 
 
                     }
-                        
-                    
+
+
                 }
             }
             return null;
@@ -248,20 +280,20 @@ namespace ChessGame
                 Game.brd.replaceBox(start.X, start.Y, null);
                 Game.brd.replaceBox(end.X, end.Y, sourcePiece);
                 if (sourcePiece.Name == "K")
-                    kingPos[currentTurn.IsWhite] = brd.getBox(end.X,end.Y);
+                    kingPos[sourcePiece.Player.IsWhite] = brd.getBox(end.X,end.Y);
                 if (isInCheck(currentTurn) != null)
                 {
                     
                     Game.brd.replaceBox(start.X, start.Y, sourcePiece);
                     Game.brd.replaceBox(end.X, end.Y, endPiece);
                     if (sourcePiece.Name == "K")
-                        kingPos[currentTurn.IsWhite] = brd.getBox(start.X, start.Y);
+                        kingPos[sourcePiece.Player.IsWhite] = brd.getBox(start.X, start.Y);
                     return false;
                 }
                 Game.brd.replaceBox(start.X, start.Y, sourcePiece);
                 Game.brd.replaceBox(end.X, end.Y, endPiece);
                 if (sourcePiece.Name == "K")
-                    kingPos[currentTurn.IsWhite] = brd.getBox(start.X, start.Y);
+                    kingPos[sourcePiece.Player.IsWhite] = brd.getBox(start.X, start.Y);
             }
             else
             {
@@ -459,15 +491,17 @@ namespace ChessGame
                 System.Diagnostics.Debug.WriteLine("illegal move!");
                 return false;
             }
+
             if (sourcePiece.Name=="K")
             kingPos[currentTurn.IsWhite] = brd.getBox(endPoint.X, endPoint.Y);
 
+            System.Diagnostics.Debug.WriteLine("King: "+currentTurn.IsWhite.ToString()+" X: "+ kingPos[currentTurn.IsWhite].X.ToString()+" Y: "+ kingPos[currentTurn.IsWhite].Y.ToString());
             if (currentTurn == playerList[0])
                 currentTurn = playerList[1];
             else currentTurn = playerList[0];
 
             // CHECK OR CHECKMATE
-
+            getSpotList();
             if (isInCheck(currentTurn) != null)
             {
                 isCheck[currentTurn.IsWhite] = true;
@@ -484,10 +518,12 @@ namespace ChessGame
             else
             {
                 isCheck[currentTurn.IsWhite] = false;
-                //if (isStaleMate(currentTurn))
-                    //System.Diagnostics.Debug.WriteLine("STALEMATE YOU FUCK" + currentTurn.IsWhite.ToString());
+                
+                if (isStaleMate(currentTurn))
+                    System.Diagnostics.Debug.WriteLine("STALEMATE YOU FUCK" + currentTurn.IsWhite.ToString());
             }
-
+            
+            
             // CHANGE COLOR LABEL
             if (currentTurn == playerList[0])
             {

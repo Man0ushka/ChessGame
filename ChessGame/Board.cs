@@ -81,6 +81,7 @@ namespace ChessGame
                     DrawTool.DrawSpotColor(spot, spot.SpotColor);
                     DrawTool.DrawPieceInit(spot.X, spot.Y, spot.Piece.Name, spot.Piece.Player.IsWhite);
                     Game.piecesAlive[spot.Piece]=spot;
+                    //Form1.form1.game.movPoss.Add(spot.Piece,new List<Spot>());
                 }
                     
             }
