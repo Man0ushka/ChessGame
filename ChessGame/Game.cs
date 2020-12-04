@@ -375,31 +375,6 @@ namespace ChessGame
             bool canMoveWithoutChecked = CanMovWithoutChecked(sourcePiece,endPiece, startPoint, endPoint);
             bool canMove = sourcePiece.canMove(startPoint, endPoint);
 
-            
-            // CHECK CASE
-
-            // CAN YOU MOVE WITHOUT BEING CHECKED
-            /* if (canMove)
-                 {
-                     if (sourcePiece.Name == "K")
-                         kingPos[currentTurn.IsWhite] = endPoint;
-                     brd.replaceBox(startPoint.X, startPoint.Y, null);
-                     brd.replaceBox(endPoint.X, endPoint.Y, sourcePiece);
-                     if (isInCheck(currentTurn) != null)
-                     {
-                         brd.replaceBox(startPoint.X, startPoint.Y, sourcePiece);
-                         brd.replaceBox(endPoint.X, endPoint.Y, null);
-                         if (sourcePiece.Name == "K")
-                             kingPos[currentTurn.IsWhite] = startPoint;
-                         return false;
-                     }
-                     brd.replaceBox(startPoint.X, startPoint.Y, sourcePiece);
-                     brd.replaceBox(endPoint.X, endPoint.Y, null);
-                     if (sourcePiece.Name == "K")
-                         kingPos[currentTurn.IsWhite] = startPoint;
-                 }
-                 else return false;*/
-
 
 
             //////////////// KING CASTLING

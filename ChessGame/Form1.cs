@@ -103,21 +103,23 @@ namespace ChessGame
         {
             Point p = new Point( MousePosition.X, MousePosition.Y);
             Point q = boardPicture.PointToClient(p);
+            int sX = q.Y / (hgt / 8);
+            int sY = q.X / (wid / 8);
             game.getSpotList();
             // Rien de sélectionner
-            if (mouseClick==false)
+            if (mouseClick == false)
             {
                 //game.getSpotList();
-                startSpot = game.Brd.getBox(q.Y/(hgt/8), q.X/(wid/8));
-               // startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
+                startSpot = game.Brd.Boxes[sX, sY];
+
                 if (startSpot.Piece == null || startSpot.Piece.Player!=game.currentTurn)
                     return;
                 // DRAW CLICKED OUTLINE
                 Graphics gr = Graphics.FromImage(Form1.bm);
-                Rectangle rectStart = new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
+                Rectangle rectStart = new Rectangle(sY * Form1.hgt / 8, sX * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
                 //gr.DrawRectangle(startPen, rectStart);
                 gr.FillRectangle(startBrush, rectStart);
-                DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
+                DrawTool.DrawPieceInit(sX, sY, startSpot.Piece.Name, game.currentTurn.IsWhite);
 
 
                 //boardPicture.Invalidate(rectStart);
@@ -145,9 +147,10 @@ namespace ChessGame
                 /*Graphics gr = Graphics.FromImage(Form1.bm);
                 gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                 boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));*/
-                endSpot = game.Brd.getBox(q.Y / (hgt / 8), q.X / (wid / 8));
-               // endSpot = game.Brd.Boxes[Symetry(endSpot.X), Symetry(endSpot.Y)];
-                System.Diagnostics.Debug.WriteLine(" X: " + endSpot.X.ToString() + " Y: " + endSpot.Y.ToString());
+                //endSpot = game.Brd.getBox(q.Y / (hgt / 8), (q.X / (wid / 8)));
+                endSpot= game.Brd.Boxes[sX, sY];
+                // endSpot = game.Brd.Boxes[Symetry(endSpot.X), Symetry(endSpot.Y)];
+                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString());
                 if (endSpot.Piece != null && endSpot.Piece.Player == game.currentTurn)
                 {
                     System.Diagnostics.Debug.WriteLine("Isup: " + endSpot.Piece.Player.IsUp.ToString() + " X: " + endSpot.X.ToString() + " Y: " + endSpot.Y.ToString());
@@ -163,12 +166,12 @@ namespace ChessGame
                     SolidBrush blankBrush = new SolidBrush(startSpot.SpotColor);
                     //gr.DrawRectangle(blankPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    gr.FillRectangle(blankBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
+                    gr.FillRectangle(blankBrush, new Rectangle(sY * Form1.hgt / 8, sX * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    DrawTool.DrawPieceInit(sX, sY, startSpot.Piece.Name, game.currentTurn.IsWhite);
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     startSpot = endSpot;
-                    gr.FillRectangle(startBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
+                    gr.FillRectangle(startBrush, new Rectangle(sY * Form1.hgt / 8, sX* Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    DrawTool.DrawPieceInit(sX, sY, startSpot.Piece.Name, game.currentTurn.IsWhite);
                     //gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
@@ -336,116 +339,44 @@ namespace ChessGame
 
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
-            isFlipped = !isFlipped;
-            game.movPoss.Clear();
+            
             Game.piecesAlive.Clear();
+            game.movPoss.Clear();
+            Board board = new Board();
+
+            for (int i=0;i<8;i++)
+            {
+                for (int j = 0; j < 8;j++)
+                {
+                    board.Boxes[i, j] = new Spot(i, j, game.Brd.Boxes[Symetry(i), Symetry(j)].Piece);
+
+                }
+            }
+            game.Brd = board;
             foreach (Spot spot in game.Brd.Boxes)
             {
-                Spot originalSpot = new Spot(spot.X, spot.Y, spot.Piece);
-                // DrawTool.DrawSpotColor(spot);
 
-                switch (spot.X)
-                    {
-                        case 0:
-                        originalSpot.X = 7;
-                            break;
-                        case 1:
-                        originalSpot.X = 6;
-                            break;
-                        case 2:
-                        originalSpot.X = 5;
-                            break;
-                        case 3:
-                        originalSpot.X = 4;
-                            break;
-                        case 4:
-                        originalSpot.X = 3;
-                            break;
-                        case 5:
-                        originalSpot.X = 2;
-                            break;
-                        case 6:
-                        originalSpot.X = 1;
-                            break;
-                        case 7:
-                        originalSpot.X = 0;
-                            break;
-                    }
-                    switch (spot.Y)
-                    {
-                        case 0:
-                        originalSpot.Y = 7;
-                            break;
-                        case 1:
-                        originalSpot.Y = 6;
-                            break;
-                        case 2:
-                        originalSpot.Y = 5;
-                            break;
-                        case 3:
-                        originalSpot.Y = 4;
-                            break;
-                        case 4:
-                        originalSpot.Y = 3;
-                            break;
-                        case 5:
-                        originalSpot.Y = 2;
-                            break;
-                        case 6:
-                        originalSpot.Y = 1;
-                            break;
-                        case 7:
-                        originalSpot.Y = 0;
-                            break;
-                    }
-                
-                if (spot.Piece==null)
+                if (spot == null || spot.Piece == null)
                 {
-                    DrawTool.DrawSpotColor(originalSpot);
-                    //Game.piecesAlive.Remove(originalSpot.Piece);
-                }
-                //if (spot.Piece != null && originalSpot.Piece==null)
-                //{
-                //    DrawTool.DrawSpotColor(Game.piecesAlive[spot.Piece]);
-                //    Game.piecesAlive.Remove(spot.Piece);
-                //}
-                //Game.brd.replaceBox(originalSpot.X, originalSpot.Y, spot.Piece);
-                //game.Brd.Boxes[spot.X, spot.Y] = new Spot(originalSpot.X, originalSpot.Y, spot.Piece);
-                if (originalSpot.Piece != null)
-                {
-                    //if (spot.Piece != null)
-                    //{
-                    //    Game.piecesAlive.Remove(spot.Piece);
-                    //}
 
-                    originalSpot.Piece.Player.IsUp = !originalSpot.Piece.Player.IsUp;
-                    spot.Piece.Player.IsUp = !spot.Piece.Player.IsUp;
-
-                    Game.piecesAlive[originalSpot.Piece] = new Spot(originalSpot.X, originalSpot.Y, spot.Piece);
-                    if (spot.Piece.Name == "K")
-                        game.kingPos[originalSpot.Piece.Player.IsWhite] = new Spot(originalSpot.X, originalSpot.Y, spot.Piece);
-                    
-                    DrawTool.DrawSpotColor(Game.piecesAlive[originalSpot.Piece]);
-                    DrawTool.DrawPieceInit(Game.piecesAlive[originalSpot.Piece].X, Game.piecesAlive[originalSpot.Piece].Y, Game.piecesAlive[originalSpot.Piece].Piece.Name, Game.piecesAlive[originalSpot.Piece].Piece.Player.IsWhite);
-                    boardPicture.Invalidate();
                 }
                 else
                 {
-                    //game.Brd.Boxes[spot.X, spot.Y] = new Spot(originalSpot.X, originalSpot.Y, null);
+                    DrawTool.DrawSpotColor(spot);
+                    DrawTool.DrawPieceInit(spot.X, spot.Y, spot.Piece.Name, spot.Piece.Player.IsWhite);
+                    Game.piecesAlive[spot.Piece] = spot;
+                    boardPicture.Invalidate();
+                    //Form1.form1.game.movPoss.Add(spot.Piece,new List<Spot>());
                 }
-                //Game.brd.replaceBox(originalSpot.X, originalSpot.Y, spot.Piece);
-
 
             }
-            foreach(Piece piece in Game.piecesAlive.Keys)
-            {
-                game.Brd.Boxes[Game.piecesAlive[piece].X, Game.piecesAlive[piece].Y]= new Spot(Game.piecesAlive[piece].X, Game.piecesAlive[piece].Y, Game.piecesAlive[piece].Piece);
-            }
+            isFlipped = !isFlipped;
             game.p1.IsUp = !game.p1.IsUp;
             game.p2.IsUp = !game.p2.IsUp;
-            mouseClick = false;
             game.getSpotList();
             
+            mouseClick = false;
+
 
         }
     }
