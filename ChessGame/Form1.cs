@@ -141,7 +141,7 @@ namespace ChessGame
                 // IS BOARD FLIPPED?
                 //startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
 
-                game.getSpotList();
+                //game.getSpotList();
 
                 //REMOVE START OUTLINE
                 /*Graphics gr = Graphics.FromImage(Form1.bm);
