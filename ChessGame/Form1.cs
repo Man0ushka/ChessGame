@@ -339,7 +339,7 @@ namespace ChessGame
 
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
-            
+            isFlipped = !isFlipped;
             Game.piecesAlive.Clear();
             game.movPoss.Clear();
             Board board = new Board();
@@ -370,7 +370,7 @@ namespace ChessGame
                 }
 
             }
-            isFlipped = !isFlipped;
+            
             game.p1.IsUp = !game.p1.IsUp;
             game.p2.IsUp = !game.p2.IsUp;
             game.getSpotList();
