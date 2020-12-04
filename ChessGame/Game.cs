@@ -8,7 +8,7 @@ namespace ChessGame
 {
     public class Game
     {
-        List<Player> playerList = new List<Player>();
+        public List<Player> playerList = new List<Player>();
         public List<Move> moveList = new List<Move>();
         public static Board brd = new Board();
         GameStatus status;
@@ -25,8 +25,8 @@ namespace ChessGame
         public Dictionary<Piece, List<Spot>> movPoss = new Dictionary<Piece, List<Spot>>();
         public GameStatus Status { get => status; set => status = value; }
         public Board Brd { get => brd; set => brd = value; }
-        Player p1;
-        Player p2;
+        public Player p1;
+        public Player p2;
 
         public Game()
         {
@@ -88,9 +88,18 @@ namespace ChessGame
             checkMate.Clear();
             movPoss.Clear();
             
-
+            if (Form1.form1.isFlipped==false)
+            {
                 downKingSpot = new Spot(7, 4, new King(p1));
                 upKingSpot = new Spot(0, 4, new King(p2));
+            }
+            else
+            {
+                downKingSpot = new Spot(7, 3, new King(p1));
+                upKingSpot = new Spot(0, 3, new King(p2));
+            }
+
+
                 kingPos.Add(p2.IsWhite, upKingSpot);
                 kingPos.Add(p1.IsWhite, downKingSpot);
             System.Diagnostics.Debug.WriteLine("King: " + p1.IsWhite.ToString() + " X: " + kingPos[p1.IsWhite].X.ToString() + " Y: " + kingPos[p1.IsWhite].Y.ToString());
@@ -488,7 +497,7 @@ namespace ChessGame
                     
                     endPoint.Piece.Alive = false;
                     // DELETE PIECE FROM DRAWING
-                   // DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player);
+                    //DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player.IsWhite);
                     brd.replaceBox(startPoint.X, startPoint.Y, null);
                     brd.replaceBox(endPoint.X, endPoint.Y, sourcePiece);
                     
@@ -499,7 +508,7 @@ namespace ChessGame
                 {
                     brd.replaceBox(startPoint.X, startPoint.Y, null);
                     brd.replaceBox(endPoint.X, endPoint.Y, sourcePiece);
-                    //DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player);
+                    //DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player.IsWhite);
                     moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, null));
                     System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name + " x: " + startPoint.X + " y: " + startPoint.Y + " to " + "x: " + endPoint.X + " y: " + endPoint.Y);
                 }
@@ -528,6 +537,8 @@ namespace ChessGame
                 if (isCheckMate(currentTurn))
                 {
                     System.Diagnostics.Debug.WriteLine("YOU ARE IN CHECKMATE" + currentTurn.IsWhite.ToString());
+
+                    Form1.form1.isFlipped = !Form1.form1.isFlipped;
                     if (playerList[0].IsWhite)
                     {
                        p1 = new BlackHuman(false);

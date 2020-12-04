@@ -26,6 +26,21 @@ namespace ChessGame
                 spotColor = Color.White;
             else
                 spotColor = Color.Gray;
+            /* if (Form1.form1.isFlipped==false)
+             {
+                 if (x % 2 == y % 2)
+                     spotColor = Color.White;
+                 else
+                     spotColor = Color.Gray;
+             }
+             else
+             {
+                 if (x % 2 == y % 2)
+                     spotColor = Color.Gray;
+                 else
+                     spotColor = Color.White;
+             }*/
+
         }
 
 

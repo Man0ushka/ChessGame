@@ -11,6 +11,9 @@ namespace ChessGame
         {
             //this.resetBoard();
         }
+
+        public Spot[,] Boxes { get => boxes; set => boxes = value; }
+
         public Spot getBox(int x, int y)
         {
 
@@ -28,13 +31,35 @@ namespace ChessGame
 
         public void resetBoard(Player up, Player down)
         {
-            
+            /*if (Form1.form1.isFlipped==false)
+            {
+                boxes[0, 3] = new Spot(0, 3, new Queen(up));
+                boxes[0, 4] = new Spot(0, 4, new King(up));
+
+                boxes[7, 3] = new Spot(7, 3, new Queen(down));
+                boxes[7, 4] = new Spot(7, 4, new King(down));
+
+            }
+            else
+            {
+                boxes[0, 3] = new Spot(0, 3, new King(up));
+                boxes[0, 4] = new Spot(0, 4, new Queen(up));
+
+                boxes[7, 3] = new Spot(7, 3, new King(down));
+                boxes[7, 4] = new Spot(7, 4, new Queen(down));
+            }*/
             // initialize black pieces 
+
+            boxes[0, 3] = new Spot(0, 3, new Queen(up));
+            boxes[0, 4] = new Spot(0, 4, new King(up));
+
+            boxes[7, 3] = new Spot(7, 3, new Queen(down));
+            boxes[7, 4] = new Spot(7, 4, new King(down));
+
             boxes[0,0] = new Spot(0, 0, new Rook(up));
             boxes[0,1] = new Spot(0, 1, new Knight(up));
             boxes[0,2] = new Spot(0, 2, new Bishop(up));
-            boxes[0, 3] = new Spot(0, 3, new Queen(up));
-            boxes[0, 4] = new Spot(0, 4, new King(up));
+           
             boxes[0, 5] = new Spot(0, 5, new Bishop(up));
             boxes[0, 6] = new Spot(0, 6, new Knight(up));
             boxes[0, 7] = new Spot(0, 7, new Rook(up));
@@ -54,8 +79,7 @@ namespace ChessGame
             boxes[7,0] = new Spot(7, 0, new Rook(down));
             boxes[7,1] = new Spot(7, 1, new Knight(down));
             boxes[7,2] = new Spot(7, 2, new Bishop(down));
-            boxes[7, 3] = new Spot(7, 3, new Queen(down));
-            boxes[7, 4] = new Spot(7, 4, new King(down));
+            
             boxes[7, 5] = new Spot(7, 5, new Bishop(down));
             boxes[7, 6] = new Spot(7, 6, new Knight(down));
             boxes[7, 7] = new Spot(7, 7, new Rook(down));

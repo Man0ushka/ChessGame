@@ -19,6 +19,8 @@ namespace ChessGame
             this.endSpot = endSpot;
             this.movedPiece = movedPiece;
             this.killedPiece = killedPiece;
+
+
         }
 
         public Spot EndSpot { get => endSpot; set => endSpot = value; }
