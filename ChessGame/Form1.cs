@@ -105,13 +105,13 @@ namespace ChessGame
             Point q = boardPicture.PointToClient(p);
             int sX = q.Y / (hgt / 8);
             int sY = q.X / (wid / 8);
-            game.getSpotList();
+            //game.getSpotList();
             // Rien de sélectionner
             if (mouseClick == false)
             {
-                //game.getSpotList();
+                game.getSpotList();
                 startSpot = game.Brd.Boxes[sX, sY];
-
+                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString() + " Piece: " + startSpot.Piece.Name + " Player: " + startSpot.Piece.Player.IsWhite.ToString()+" Isup: "+ startSpot.Piece.Player.IsUp.ToString());
                 if (startSpot.Piece == null || startSpot.Piece.Player!=game.currentTurn)
                     return;
                 // DRAW CLICKED OUTLINE
@@ -141,7 +141,7 @@ namespace ChessGame
                 // IS BOARD FLIPPED?
                 //startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
 
-                //game.getSpotList();
+                game.getSpotList();
 
                 //REMOVE START OUTLINE
                 /*Graphics gr = Graphics.FromImage(Form1.bm);
@@ -150,7 +150,7 @@ namespace ChessGame
                 //endSpot = game.Brd.getBox(q.Y / (hgt / 8), (q.X / (wid / 8)));
                 endSpot= game.Brd.Boxes[sX, sY];
                 // endSpot = game.Brd.Boxes[Symetry(endSpot.X), Symetry(endSpot.Y)];
-                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString());
+                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString()+" Piece: "+endSpot.Piece.Name+" Player: "+endSpot.Piece.Player.IsWhite.ToString() + " Isup: " + endSpot.Piece.Player.IsUp.ToString());
                 if (endSpot.Piece != null && endSpot.Piece.Player == game.currentTurn)
                 {
                     System.Diagnostics.Debug.WriteLine("Isup: " + endSpot.Piece.Player.IsUp.ToString() + " X: " + endSpot.X.ToString() + " Y: " + endSpot.Y.ToString());
@@ -166,12 +166,12 @@ namespace ChessGame
                     SolidBrush blankBrush = new SolidBrush(startSpot.SpotColor);
                     //gr.DrawRectangle(blankPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    gr.FillRectangle(blankBrush, new Rectangle(sY * Form1.hgt / 8, sX * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    DrawTool.DrawPieceInit(sX, sY, startSpot.Piece.Name, game.currentTurn.IsWhite);
+                    gr.FillRectangle(blankBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    startSpot = endSpot;
-                    gr.FillRectangle(startBrush, new Rectangle(sY * Form1.hgt / 8, sX* Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    DrawTool.DrawPieceInit(sX, sY, startSpot.Piece.Name, game.currentTurn.IsWhite);
+                    //startSpot = endSpot;
+                    gr.FillRectangle(startBrush, new Rectangle(endSpot.Y * Form1.hgt / 8, endSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
+                    DrawTool.DrawPieceInit(endSpot.X, endSpot.Y, endSpot.Piece.Name, game.currentTurn.IsWhite);
                     //gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
@@ -340,19 +340,26 @@ namespace ChessGame
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
             isFlipped = !isFlipped;
+            game.p1.IsUp = !game.p1.IsUp;
+            game.p2.IsUp = !game.p2.IsUp;
             Game.piecesAlive.Clear();
             game.movPoss.Clear();
+
             Board board = new Board();
+            foreach(Spot spot in game.Brd.Boxes)
+            {
+                board.Boxes[spot.X, spot.Y] = new Spot(spot.X, spot.Y, spot.Piece);
+            }
 
             for (int i=0;i<8;i++)
             {
                 for (int j = 0; j < 8;j++)
                 {
-                    board.Boxes[i, j] = new Spot(i, j, game.Brd.Boxes[Symetry(i), Symetry(j)].Piece);
+                    game.Brd.Boxes[i, j] = new Spot(i, j, board.Boxes[Symetry(i), Symetry(j)].Piece);
 
                 }
             }
-            game.Brd = board;
+            
             foreach (Spot spot in game.Brd.Boxes)
             {
 
@@ -371,8 +378,7 @@ namespace ChessGame
 
             }
             
-            game.p1.IsUp = !game.p1.IsUp;
-            game.p2.IsUp = !game.p2.IsUp;
+
             game.getSpotList();
             
             mouseClick = false;
