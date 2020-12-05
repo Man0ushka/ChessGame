@@ -68,6 +68,14 @@ namespace ChessGame
             //DrawPiece(0, 0, "whiteP");
 
         }
+        public Spot SpotSymetryColor(Spot spot)
+        {
+            Spot newSpot = new Spot(spot.X, spot.Y, spot.Piece);
+            if (spot.SpotColor == Color.Gray)
+                newSpot.SpotColor = Color.White;
+            else newSpot.SpotColor = Color.Gray;
+            return newSpot;
+        }
         public int Symetry(int x)
         {
             
@@ -175,6 +183,7 @@ namespace ChessGame
                     Graphics gr = Graphics.FromImage(Form1.bm);
                     Pen blankPen = new Pen(startSpot.SpotColor, 1);
                     SolidBrush blankBrush = new SolidBrush(startSpot.SpotColor);
+                    
                     //gr.DrawRectangle(blankPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     gr.FillRectangle(blankBrush, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
@@ -213,6 +222,10 @@ namespace ChessGame
 
                    if (lastMove.IsFlipped!= isFlipped)
                     {
+
+                        lastSpotStart = SpotSymetryColor(lastSpotStart);
+                        lastSpotEnd = SpotSymetryColor(lastSpotEnd);
+
                         lastSpotStart.X = Symetry(lastSpotStart.X);
                         lastSpotEnd.Y = Symetry(lastSpotStart.Y);
                         lastSpotStart.X = Symetry(lastSpotStart.X);
@@ -246,6 +259,10 @@ namespace ChessGame
 
                             if (lastlastMove.IsFlipped != isFlipped)
                             {
+
+                                lastlastStartSpot = SpotSymetryColor(lastlastStartSpot);
+                                lastlastEndSpot = SpotSymetryColor(lastlastEndSpot);
+
                                 lastlastStartSpot.X = Symetry(lastlastStartSpot.X);
                                 lastlastStartSpot.Y = Symetry(lastlastStartSpot.Y);
                                 lastlastEndSpot.X = Symetry(lastlastEndSpot.X);
@@ -372,6 +389,27 @@ namespace ChessGame
                 isFlipped = true;
             else
                 isFlipped = false;
+            if (player1.BackColor == Color.Green)
+            {
+                player1.BackColor = Color.White;
+                player2.BackColor = Color.Green;
+            }
+            else
+            {
+                player1.BackColor = Color.Green;
+                player2.BackColor = Color.White;
+            }
+            if (player1.Text == "PLAYER 2")
+            {
+                player1.Text = "PLAYER 1";
+                player2.Text = "PLAYER 2";
+            }
+            else
+            {
+                player1.Text = "PLAYER 2";
+                player2.Text = "PLAYER 1";
+            }
+
 
 
             System.Diagnostics.Debug.WriteLine("Isflipped: " + isFlipped.ToString());
@@ -393,52 +431,6 @@ namespace ChessGame
                     game.currentTurn = newP2;
             }
 
-            /*if (newP1.IsWhite==true)
-            {
-                if (isFlipped == false)
-                {
-                    newP1 = new Player(true,false,true);
-                    newP2 = new Player(false,true, true);
-                }
-                else if(isFlipped == true)
-                {
-                    newP1 = new Player(true,true, true);
-                    newP2 = new Player(false,false, true);
-                }
-                if (game.currentTurn.IsWhite == true)
-                    game.currentTurn = newP1;
-                else
-                    game.currentTurn = newP2;
-            }
-            else
-            {
-                if (isFlipped == false)
-                {
-                    newP1 = new Player(false,false, true);
-                    newP2 = new Player(true,true, true);
-                }
-                else if(isFlipped == true)
-                {
-                    newP1 = new Player(false,true, true);
-                    newP2 = new Player(true,false, true);
-                }
-                if (game.currentTurn.IsWhite == false)
-                    game.currentTurn = newP1;
-                else
-                    game.currentTurn = newP2;
-            }*/
-
-
-            //if (Game.p1.IsUp == true)
-            //{
-            //    Game.p1.IsUp = false;
-            //    Game.p2.IsUp = true;
-            //}
-            //else
-            //{
-            //    Game.p2.IsUp = false;
-            //    Game.p1.IsUp = true;
-            //}
 
             Game.piecesAlive.Clear();
             game.movPoss.Clear();
@@ -448,7 +440,7 @@ namespace ChessGame
             foreach (Spot spot in game.Brd.Boxes)
             {
                 board.Boxes[spot.X, spot.Y] = new Spot(spot.X, spot.Y, spot.Piece);
-                DrawTool.DrawSpotColor(spot);
+                
             }
 
             for (int i=0;i<8;i++)
@@ -519,6 +511,7 @@ namespace ChessGame
                             
                     }
                     game.Brd.Boxes[i, j] = new Spot(i, j, piece);
+
                 }
             }
             Game.playerList.Clear();
@@ -529,7 +522,8 @@ namespace ChessGame
             //game.p2 = game.playerList[1];
             foreach (Spot spot in game.Brd.Boxes)
             {
-
+                
+                DrawTool.DrawSpotColor(spot);
                 if (spot == null || spot.Piece == null)
                 {
 
@@ -553,21 +547,21 @@ namespace ChessGame
 
             game.getSpotList();
             Graphics gr = Graphics.FromImage(Form1.bm);
-            Rectangle rectEnd = new Rectangle(Symetry(startSpot.Y) * Form1.hgt / 8, Symetry(startSpot.X) * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
+            
 
             
-            if (mouseClick==true)
+            if ((mouseClick==true) && startSpot!=null)
             {
-                
-                
-               
+                Rectangle rectEnd = new Rectangle(Symetry(startSpot.Y) * Form1.hgt / 8, Symetry(startSpot.X) * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
+
+
                 //gr.DrawRectangle(startPen, rectStart);
                 gr.FillRectangle(startBrush, rectEnd);
                 DrawTool.DrawPieceInit(Symetry(startSpot.X), Symetry(startSpot.Y), startSpot.Piece.Name, startSpot.Piece.Player.IsWhite);
                 startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
                 mouseClick = true;
             }
-            if (endSpot!=null || mouseClick==false)
+            if ((endSpot!=null || mouseClick==false) && startSpot!=null)
             {
                 Rectangle rect = new Rectangle(Symetry(endSpot.Y) * Form1.hgt / 8, Symetry(endSpot.X) * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
                 gr.FillRectangle(endBrush, rect);
@@ -579,6 +573,8 @@ namespace ChessGame
                 else mouseClick = false;
             }
             gr.Dispose();
+            
+            boardPicture.Invalidate();
             //mouseClick = true;
 
 

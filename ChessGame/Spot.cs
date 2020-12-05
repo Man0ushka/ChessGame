@@ -26,10 +26,22 @@ namespace ChessGame
             this.x = x;
             this.y = y;
             this.piece = piece;
-            if (x % 2 == y % 2)
-                spotColor = Color.White;
+
+
+            if (Form1.form1.isFlipped == true)
+            {
+                if (x % 2 == y % 2)
+                    spotColor = Color.Gray;
+                else
+                    spotColor = Color.White;
+            }
             else
-                spotColor = Color.Gray;
+            {
+                if (x % 2 == y % 2)
+                    spotColor = Color.White;
+                else
+                    spotColor = Color.Gray;
+            }
             setSpotString();
 
         }

@@ -529,18 +529,18 @@ namespace ChessGame
                 if (isStaleMate(currentTurn))
                     System.Diagnostics.Debug.WriteLine("STALEMATE YOU FUCK" + currentTurn.IsWhite.ToString());
             }
-            
-            
+
+
             // CHANGE COLOR LABEL
-            if (currentTurn == playerList[0])
+            if (Form1.form1.player1.BackColor == Color.Green)
             {
-                Form1.form1.player1.BackColor = Color.Green;
-                Form1.form1.player2.BackColor = Color.White;
+                Form1.form1.player1.BackColor = Color.White;
+                Form1.form1.player2.BackColor = Color.Green;
             }
             else
             {
-                Form1.form1.player2.BackColor = Color.Green;
-                Form1.form1.player1.BackColor = Color.White;
+                Form1.form1.player1.BackColor = Color.Green;
+                Form1.form1.player2.BackColor = Color.White;
             }
             return true;
         }
