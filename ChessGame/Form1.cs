@@ -50,9 +50,10 @@ namespace ChessGame
             bm = new Bitmap(wid, hgt);
             boardPicture.Image = bm;
             //DrawGrid();
-            game = new Game();
             newP1 = new Player(true, false, true);
             newP2 = new Player(false, true, true);
+            game = new Game(newP1,newP2);
+
             turn = game.currentTurn;
             isFlipped = false;
             /*startSpot = game.Brd.getBox(6, 5);
@@ -116,6 +117,7 @@ namespace ChessGame
 
         private void BoardPicture_MouseClick(object sender, MouseEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("Picture clicked");
             Point p = new Point( MousePosition.X, MousePosition.Y);
             Point q = boardPicture.PointToClient(p);
             int sX = q.Y / (hgt / 8);
@@ -384,6 +386,7 @@ namespace ChessGame
 
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("Flip button pressed");
 
             if (isFlipped == false)
                 isFlipped = true;
@@ -514,9 +517,9 @@ namespace ChessGame
 
                 }
             }
-            Game.playerList.Clear();
-            Game.playerList.Add(newP1);
-            Game.playerList.Add(newP2);
+            //Game.playerList.Clear();
+            //Game.playerList.Add(newP1);
+            //Game.playerList.Add(newP2);
 
             //game.p1 = game.playerList[0];
             //game.p2 = game.playerList[1];

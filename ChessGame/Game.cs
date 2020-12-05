@@ -25,13 +25,10 @@ namespace ChessGame
         public Dictionary<Piece, List<Spot>> movPoss = new Dictionary<Piece, List<Spot>>();
         public GameStatus Status { get => status; set => status = value; }
         public Board Brd { get => brd; set => brd = value; }
-        public Player p1;
-        public Player p2;
 
-        public Game()
+
+        public Game(Player p1, Player p2)
         {
-            p1 = new Player(true, false, true);
-            p2 = new Player(false, true, true);
 
             initializeGame(p1, p2);
             playerList.Add(p1);
@@ -502,21 +499,19 @@ namespace ChessGame
                     Form1.form1.isFlipped = !Form1.form1.isFlipped;
                     if (playerList[0].IsWhite)
                     {
-                       p1 = new Player(true,true,true);
-                       p2 = new Player(false,false,true);
+                        playerList[0] = new Player(true,true,true);
+                        playerList[1] = new Player(false,false,true);
                     }
                     else
                     {
-                        p1 = new Player(false, true, true);
-                        p2 = new Player(true, false, true);
+                        playerList[0] = new Player(false, true, true);
+                        playerList[1] = new Player(true, false, true);
                     }
 
                     piecesAlive.Clear();
                     piecesDead.Clear();
-                    playerList.Clear();
-                    initializeGame(p1, p2);
-                    playerList.Add(p1);
-                    playerList.Add(p2);
+                    initializeGame(playerList[0], playerList[1]);
+
                 }
 
                 else
