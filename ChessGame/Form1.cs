@@ -23,6 +23,8 @@ namespace ChessGame
         bool mouseUp = false;
         bool mouseClick = false;
 
+        bool selected = false;
+
         static Spot startSpot;
         static Spot endSpot;
         public Game game;
@@ -114,11 +116,13 @@ namespace ChessGame
             // Rien de sélectionner
             if (mouseClick == false)
             {
+                System.Diagnostics.Debug.WriteLine("Mouse click: " + mouseClick.ToString());
                 game.getSpotList();
                 startSpot = game.Brd.Boxes[sX, sY];
-                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString() + " Piece: " + startSpot.Piece.Name + " Player: " + startSpot.Piece.Player.IsWhite.ToString()+" Isup: "+ startSpot.Piece.Player.IsUp.ToString());
                 if (startSpot.Piece == null || startSpot.Piece.Player!=game.currentTurn)
                     return;
+                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString() + " Piece: " + startSpot.Piece.Name + " Player: " + startSpot.Piece.Player.IsWhite.ToString() + " Isup: " + startSpot.Piece.Player.IsUp.ToString());
+
                 // DRAW CLICKED OUTLINE
                 Graphics gr = Graphics.FromImage(Form1.bm);
                 Rectangle rectStart = new Rectangle(sY * Form1.hgt / 8, sX * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
@@ -130,6 +134,7 @@ namespace ChessGame
                 //boardPicture.Invalidate(rectStart);
                 boardPicture.Invalidate(rectStart);
                 mouseClick = true;
+                
                 gr.Dispose();
 
                 if (game.movPoss[startSpot.Piece].Count == 0)
@@ -198,12 +203,21 @@ namespace ChessGame
                 }
                 else if (game.moveList.Count > 0)
                 {
+                    selected = true;
                     SolidBrush blankBrush = new SolidBrush(endSpot.SpotColor);
                     Graphics g = Graphics.FromImage(Form1.bm);
-                    Spot lastSpotStart = game.moveList.Last().StartSpot;
-                    Spot lastSpotEnd = game.moveList.Last().EndSpot;
-                    Piece piece = game.moveList.Last().MovedPiece;
+                    Move lastMove = game.moveList.Last();
+                    Spot lastSpotStart = lastMove.StartSpot;
+                    Spot lastSpotEnd = lastMove.EndSpot;
+                    Piece piece = lastMove.MovedPiece;
 
+                   if (lastMove.IsFlipped!= isFlipped)
+                    {
+                        lastSpotStart.X = Symetry(lastSpotStart.X);
+                        lastSpotEnd.Y = Symetry(lastSpotStart.Y);
+                        lastSpotStart.X = Symetry(lastSpotStart.X);
+                        lastSpotEnd.Y = Symetry(lastSpotStart.Y);
+                    }
 
                     //lastSpotStart.X = Symetry(lastSpotStart.X);
                     //lastSpotStart.Y = Symetry(lastSpotStart.Y);
@@ -230,6 +244,13 @@ namespace ChessGame
                             Spot lastlastEndSpot = lastlastMove.EndSpot;
                             Spot lastlastStartSpot = lastlastMove.StartSpot;
 
+                            if (lastlastMove.IsFlipped != isFlipped)
+                            {
+                                lastlastStartSpot.X = Symetry(lastlastStartSpot.X);
+                                lastlastStartSpot.Y = Symetry(lastlastStartSpot.Y);
+                                lastlastEndSpot.X = Symetry(lastlastEndSpot.X);
+                                lastlastEndSpot.Y = Symetry(lastlastEndSpot.Y);
+                            }
                             //lastlastEndSpot.X = Symetry(lastlastEndSpot.X);
                             //lastlastEndSpot.Y = Symetry(lastlastEndSpot.Y);
                             //lastlastStartSpot.X = Symetry(lastlastStartSpot.X);
@@ -255,6 +276,7 @@ namespace ChessGame
                                 DrawTool.DrawPieceInit(lastSpotEnd.X, lastSpotEnd.Y, piece.Name, piece.Player.IsWhite);
                                 ////boardPicture.Invalidate(new Rectangle(lastSpotEnd.Y * Form1.hgt / 8, lastSpotEnd.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                                 boardPicture.Invalidate();
+                                
                             }
 
                             //boardPicture.Invalidate();
@@ -294,7 +316,7 @@ namespace ChessGame
                 }
 
                 boardPicture.Invalidate();
-                //mouseClick = false;
+                mouseClick = false;
                 
 
                
@@ -530,8 +552,34 @@ namespace ChessGame
 
 
             game.getSpotList();
+            Graphics gr = Graphics.FromImage(Form1.bm);
+            Rectangle rectEnd = new Rectangle(Symetry(startSpot.Y) * Form1.hgt / 8, Symetry(startSpot.X) * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
+
             
-            mouseClick = false;
+            if (mouseClick==true)
+            {
+                
+                
+               
+                //gr.DrawRectangle(startPen, rectStart);
+                gr.FillRectangle(startBrush, rectEnd);
+                DrawTool.DrawPieceInit(Symetry(startSpot.X), Symetry(startSpot.Y), startSpot.Piece.Name, startSpot.Piece.Player.IsWhite);
+                startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
+                mouseClick = true;
+            }
+            if (endSpot!=null || mouseClick==false)
+            {
+                Rectangle rect = new Rectangle(Symetry(endSpot.Y) * Form1.hgt / 8, Symetry(endSpot.X) * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8);
+                gr.FillRectangle(endBrush, rect);
+                endSpot = game.Brd.Boxes[Symetry(endSpot.X), Symetry(endSpot.Y)];
+                DrawTool.DrawPieceInit(endSpot.X, endSpot.Y, endSpot.Piece.Name, endSpot.Piece.Player.IsWhite);
+               // mouseClick = false;
+                if (mouseClick == true)
+                    mouseClick = true;
+                else mouseClick = false;
+            }
+            gr.Dispose();
+            //mouseClick = true;
 
 
         }

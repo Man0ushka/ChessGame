@@ -462,16 +462,16 @@ namespace ChessGame
                     brd.replaceBox(startPoint.X, startPoint.Y, null);
                     brd.replaceBox(endPoint.X, endPoint.Y, sourcePiece);
                     
-                    moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, endPiece));
-                    System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name +" x: "+startPoint.X+" y: "+startPoint.Y+ " to " + "x: " + endPoint.X + " y: " + endPoint.Y+" killed: "+endPiece.Name);
+                    moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, endPiece, Form1.form1.isFlipped));
+                    System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name +" x: "+startPoint.X+" y: "+startPoint.Y+ " to " + "x: " + endPoint.X + " y: " + endPoint.Y+" killed: "+endPiece.Name + " isflipped: " + Form1.form1.isFlipped.ToString());
                 }
                 else //MOVE PIECE
                 {
                     brd.replaceBox(startPoint.X, startPoint.Y, null);
                     brd.replaceBox(endPoint.X, endPoint.Y, sourcePiece);
                     //DrawTool.DrawPiece(startPoint, endPoint, sourcePiece.Name, sourcePiece.Player.IsWhite);
-                    moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, null));
-                    System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name + " x: " + startPoint.X + " y: " + startPoint.Y + " to " + "x: " + endPoint.X + " y: " + endPoint.Y);
+                    moveList.Add(new Move(currentTurn, startPoint, endPoint, sourcePiece, null, Form1.form1.isFlipped));
+                    System.Diagnostics.Debug.WriteLine("Player: " + currentTurn.IsWhite.ToString() + " moved " + startPoint.Piece.Name + " x: " + startPoint.X + " y: " + startPoint.Y + " to " + "x: " + endPoint.X + " y: " + endPoint.Y+ " isflipped: "+ Form1.form1.isFlipped.ToString());
                 }
                 piecesAlive[sourcePiece] = brd.getBox(endPoint.X, endPoint.Y);
             }
