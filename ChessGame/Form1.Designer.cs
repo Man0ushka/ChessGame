@@ -73,7 +73,7 @@
             this.btnFlipBoard.TabIndex = 2;
             this.btnFlipBoard.Text = "Fip Board";
             this.btnFlipBoard.UseVisualStyleBackColor = true;
-            this.btnFlipBoard.Click += new System.EventHandler(this.btnFlipBoard_Click);
+            this.btnFlipBoard.Click += new System.EventHandler(this.btnFpBoard_Click);
             // 
             // Form1
             // 

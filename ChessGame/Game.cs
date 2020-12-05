@@ -8,7 +8,7 @@ namespace ChessGame
 {
     public class Game
     {
-        public List<Player> playerList = new List<Player>();
+        public static List<Player> playerList = new List<Player>();
         public List<Move> moveList = new List<Move>();
         public static Board brd = new Board();
         GameStatus status;
@@ -30,28 +30,14 @@ namespace ChessGame
 
         public Game()
         {
-            
-            p1 = new WhiteHuman(false);
-            p2 = new BlackHuman(true);
+            p1 = new Player(true, false, true);
+            p2 = new Player(false, true, true);
+
             initializeGame(p1, p2);
             playerList.Add(p1);
             playerList.Add(p2);
         }
 
-        public void FlipBoard()
-        {
-            // FLIP PLAYER ISUP
-            if (p1.IsUp)
-            {
-                p1.IsUp = false;
-                p2.IsUp = true;
-            }
-            else
-            {
-                p1.IsUp = true;
-                p2.IsUp = false;
-            }
-        }
 
         public void initializeGame(Player p1, Player p2)
         {
@@ -516,13 +502,13 @@ namespace ChessGame
                     Form1.form1.isFlipped = !Form1.form1.isFlipped;
                     if (playerList[0].IsWhite)
                     {
-                       p1 = new BlackHuman(false);
-                       p2 = new WhiteHuman(true);
+                       p1 = new Player(true,true,true);
+                       p2 = new Player(false,false,true);
                     }
                     else
                     {
-                        p1 = new WhiteHuman(false);
-                        p2 = new BlackHuman(true);
+                        p1 = new Player(false, true, true);
+                        p2 = new Player(true, false, true);
                     }
 
                     piecesAlive.Clear();

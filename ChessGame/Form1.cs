@@ -13,7 +13,7 @@ namespace ChessGame
 {
     public partial class Form1 : Form
     {
-        public bool isFlipped = false;
+        public bool isFlipped;
 
         public static Bitmap bm;
         public static int wid;
@@ -26,7 +26,9 @@ namespace ChessGame
         static Spot startSpot;
         static Spot endSpot;
         public Game game;
-            
+
+        Player newP1;
+        Player newP2;
 
         public static SolidBrush blankBrush = new SolidBrush(Color.White);
         public static SolidBrush startBrush = new SolidBrush(Color.LightBlue);
@@ -47,7 +49,10 @@ namespace ChessGame
             boardPicture.Image = bm;
             //DrawGrid();
             game = new Game();
+            newP1 = new Player(true, false, true);
+            newP2 = new Player(false, true, true);
             turn = game.currentTurn;
+            isFlipped = false;
             /*startSpot = game.Brd.getBox(6, 5);
             endSpot = game.Brd.getBox(5, 5);
             game.makeMove(startSpot, endSpot);*/
@@ -56,7 +61,7 @@ namespace ChessGame
             //boardPicture.MouseDown += BoardPicture_MouseDown;
             //boardPicture.MouseUp += BoardPicture_MouseUp;
             boardPicture.MouseClick += BoardPicture_MouseClick;
-
+            btnFlipBoard.MouseClick += btnFlipBoard_Click;
 
             //DrawPiece(0, 0, "whiteP");
 
@@ -65,8 +70,7 @@ namespace ChessGame
         {
             
             int originalX = x;
-            if (isFlipped==true)
-            {
+
                 switch (x)
                 {
                     case 0:
@@ -94,7 +98,8 @@ namespace ChessGame
                         originalX = 0;
                         break;
                 }
-            }
+            
+
 
             return originalX;
         }
@@ -141,7 +146,7 @@ namespace ChessGame
                 // IS BOARD FLIPPED?
                 //startSpot = game.Brd.Boxes[Symetry(startSpot.X), Symetry(startSpot.Y)];
 
-                //game.getSpotList();
+                game.getSpotList();
 
                 //REMOVE START OUTLINE
                 /*Graphics gr = Graphics.FromImage(Form1.bm);
@@ -150,10 +155,11 @@ namespace ChessGame
                 //endSpot = game.Brd.getBox(q.Y / (hgt / 8), (q.X / (wid / 8)));
                 endSpot= game.Brd.Boxes[sX, sY];
                 // endSpot = game.Brd.Boxes[Symetry(endSpot.X), Symetry(endSpot.Y)];
-                System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString()+" Piece: "+endSpot.Piece.Name+" Player: "+endSpot.Piece.Player.IsWhite.ToString() + " Isup: " + endSpot.Piece.Player.IsUp.ToString());
+               
                 if (endSpot.Piece != null && endSpot.Piece.Player == game.currentTurn)
                 {
-                    System.Diagnostics.Debug.WriteLine("Isup: " + endSpot.Piece.Player.IsUp.ToString() + " X: " + endSpot.X.ToString() + " Y: " + endSpot.Y.ToString());
+                    System.Diagnostics.Debug.WriteLine(" X: " + sX.ToString() + " Y: " + sY.ToString() + " Piece: " + endSpot.Piece.Name + " Player: " + endSpot.Piece.Player.IsWhite.ToString() + " Isup: " + endSpot.Piece.Player.IsUp.ToString());
+                    
                     if (game.movPoss[endSpot.Piece].Count == 0)
                         System.Diagnostics.Debug.WriteLine(endSpot.Piece.Name + " cannot move!");
                     foreach (Spot spot in game.movPoss[endSpot.Piece])
@@ -171,7 +177,7 @@ namespace ChessGame
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     startSpot = endSpot;
                     gr.FillRectangle(startBrush, new Rectangle(endSpot.Y * Form1.hgt / 8, endSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
-                    DrawTool.DrawPieceInit(endSpot.X, endSpot.Y, endSpot.Piece.Name, game.currentTurn.IsWhite);
+                    DrawTool.DrawPieceInit(startSpot.X, startSpot.Y, startSpot.Piece.Name, game.currentTurn.IsWhite);
                     //gr.DrawRectangle(startPen, new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8-1, Form1.hgt / 8-1));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
                     //boardPicture.Invalidate(new Rectangle(startSpot.Y * Form1.hgt / 8, startSpot.X * Form1.wid / 8, Form1.wid / 8, Form1.hgt / 8));
@@ -288,7 +294,7 @@ namespace ChessGame
                 }
 
                 boardPicture.Invalidate();
-                    mouseClick = false;
+                //mouseClick = false;
                 
 
                
@@ -339,27 +345,166 @@ namespace ChessGame
 
         private void btnFlipBoard_Click(object sender, EventArgs e)
         {
-            isFlipped = !isFlipped;
-            game.p1.IsUp = !game.p1.IsUp;
-            game.p2.IsUp = !game.p2.IsUp;
+
+            if (isFlipped == false)
+                isFlipped = true;
+            else
+                isFlipped = false;
+
+
+            System.Diagnostics.Debug.WriteLine("Isflipped: " + isFlipped.ToString());
+            newP1.IsUp = !newP1.IsUp;
+            newP2.IsUp = !newP2.IsUp;
+
+            if (newP1.IsWhite==true)
+            {
+                if (game.currentTurn.IsWhite == true)
+                    game.currentTurn = newP1;
+                else
+                    game.currentTurn = newP2;
+            }
+            else
+            {
+                if (game.currentTurn.IsWhite == false)
+                    game.currentTurn = newP1;
+                else
+                    game.currentTurn = newP2;
+            }
+
+            /*if (newP1.IsWhite==true)
+            {
+                if (isFlipped == false)
+                {
+                    newP1 = new Player(true,false,true);
+                    newP2 = new Player(false,true, true);
+                }
+                else if(isFlipped == true)
+                {
+                    newP1 = new Player(true,true, true);
+                    newP2 = new Player(false,false, true);
+                }
+                if (game.currentTurn.IsWhite == true)
+                    game.currentTurn = newP1;
+                else
+                    game.currentTurn = newP2;
+            }
+            else
+            {
+                if (isFlipped == false)
+                {
+                    newP1 = new Player(false,false, true);
+                    newP2 = new Player(true,true, true);
+                }
+                else if(isFlipped == true)
+                {
+                    newP1 = new Player(false,true, true);
+                    newP2 = new Player(true,false, true);
+                }
+                if (game.currentTurn.IsWhite == false)
+                    game.currentTurn = newP1;
+                else
+                    game.currentTurn = newP2;
+            }*/
+
+
+            //if (Game.p1.IsUp == true)
+            //{
+            //    Game.p1.IsUp = false;
+            //    Game.p2.IsUp = true;
+            //}
+            //else
+            //{
+            //    Game.p2.IsUp = false;
+            //    Game.p1.IsUp = true;
+            //}
+
             Game.piecesAlive.Clear();
             game.movPoss.Clear();
-
             Board board = new Board();
-            foreach(Spot spot in game.Brd.Boxes)
+            
+
+            foreach (Spot spot in game.Brd.Boxes)
             {
                 board.Boxes[spot.X, spot.Y] = new Spot(spot.X, spot.Y, spot.Piece);
+                DrawTool.DrawSpotColor(spot);
             }
 
             for (int i=0;i<8;i++)
             {
                 for (int j = 0; j < 8;j++)
                 {
-                    game.Brd.Boxes[i, j] = new Spot(i, j, board.Boxes[Symetry(i), Symetry(j)].Piece);
 
+                    Piece piece = null;
+
+                    if (board.Boxes[Symetry(i), Symetry(j)].Piece != null)
+                    {
+                        if (board.Boxes[Symetry(i), Symetry(j)].Piece.Player.IsWhite == newP1.IsWhite)
+                        {
+                            if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "P")
+                            {
+
+                                piece = new Pawn(newP1);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "R")
+                            {
+                                piece = new Rook(newP1);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "Kn")
+                            {
+                                piece = new Knight(newP1);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "B")
+                            {
+                                piece = new Bishop(newP1);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "Q")
+                            {
+                                piece = new Queen(newP1);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "K")
+                            {
+                                piece = new King(newP1);
+                            }
+                        }
+                        else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Player.IsWhite == newP2.IsWhite)
+                        {
+                            if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "P")
+                            {
+
+                                piece = new Pawn(newP2);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "R")
+                            {
+                                piece = new Rook(newP2);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "Kn")
+                            {
+                                piece = new Knight(newP2);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "B")
+                            {
+                                piece = new Bishop(newP2);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "Q")
+                            {
+                                piece = new Queen(newP2);
+                            }
+                            else if (board.Boxes[Symetry(i), Symetry(j)].Piece.Name == "K")
+                            {
+                                piece = new King(newP2);
+                            }
+                        }
+                            
+                    }
+                    game.Brd.Boxes[i, j] = new Spot(i, j, piece);
                 }
             }
-            
+            Game.playerList.Clear();
+            Game.playerList.Add(newP1);
+            Game.playerList.Add(newP2);
+
+            //game.p1 = game.playerList[0];
+            //game.p2 = game.playerList[1];
             foreach (Spot spot in game.Brd.Boxes)
             {
 
@@ -369,20 +514,30 @@ namespace ChessGame
                 }
                 else
                 {
-                    DrawTool.DrawSpotColor(spot);
+                    
+                    //spot.Piece.Player.IsUp = !spot.Piece.Player.IsUp;
+                    //DrawTool.DrawSpotColor(spot);
                     DrawTool.DrawPieceInit(spot.X, spot.Y, spot.Piece.Name, spot.Piece.Player.IsWhite);
                     Game.piecesAlive[spot.Piece] = spot;
+                    Game.piecesAlive[spot.Piece].Piece.Player.IsUp = !spot.Piece.Player.IsUp;
+                    if (spot.Piece.Name == "K")
+                        game.kingPos[spot.Piece.Player.IsWhite] = spot;
                     boardPicture.Invalidate();
                     //Form1.form1.game.movPoss.Add(spot.Piece,new List<Spot>());
                 }
 
             }
-            
+
 
             game.getSpotList();
             
             mouseClick = false;
 
+
+        }
+
+        private void btnFpBoard_Click(object sender, EventArgs e)
+        {
 
         }
     }
